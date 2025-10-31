@@ -36,65 +36,67 @@ const Products = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const [searchParams] = useSearchParams();
-  const categoryFromUrl = searchParams.get("category"); // e.g. ?category=2
+  const categoryFromUrl = searchParams.get("category");
 
- useEffect(() => {
-  const fetchAll = async () => {
-    setIsLoading(true);
-    try {
-      // ✅ Always fetch all products
-      const prodRes = await api.get("/products");
-      const catRes = await api.get("/categories");
-      
-      setProducts(Array.isArray(prodRes.data) ? prodRes.data : []);
-      setCategories(
-        Array.isArray(catRes.data) ? catRes.data : catRes.data.content || []
-      );
-      
-      // ✅ Set initial category from URL if present
-      if (categoryFromUrl && selectedCategory === "all") {
-        setSelectedCategory(categoryFromUrl);
+  // ✅ Base URLs
+  const API_BASE_URL =
+    import.meta.env.MODE === "development"
+      ? "http://localhost:8080/api"
+      : import.meta.env.VITE_API_BASE_URL;
+
+  const IMAGE_BASE_URL =
+    import.meta.env.MODE === "development"
+      ? "http://localhost:8080"
+      : "https://furniture-ecommerce-backend-production-bac7.up.railway.app";
+
+  useEffect(() => {
+    const fetchAll = async () => {
+      setIsLoading(true);
+      try {
+        const prodRes = await api.get("/products");
+        const catRes = await api.get("/categories");
+
+        setProducts(Array.isArray(prodRes.data) ? prodRes.data : []);
+        setCategories(
+          Array.isArray(catRes.data) ? catRes.data : catRes.data.content || []
+        );
+
+        if (categoryFromUrl && selectedCategory === "all") {
+          setSelectedCategory(categoryFromUrl);
+        }
+      } catch (err) {
+        console.error("Error fetching products or categories:", err);
+      } finally {
+        setIsLoading(false);
       }
-    } catch (err) {
-      console.error("Error fetching products or categories:", err);
-    } finally {
-      setIsLoading(false);
+    };
+
+    fetchAll();
+  }, []);
+
+  useEffect(() => {
+    if (categoryFromUrl) {
+      setSelectedCategory(categoryFromUrl);
     }
-  };
+  }, [categoryFromUrl]);
 
-  fetchAll();
-}, []); // Only fetch once on mount
+  const filteredProducts = products
+    .filter((product) => {
+      const matchesSearch = product.name
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase());
 
-// ✅ Sync URL param to dropdown on mount
-useEffect(() => {
-  if (categoryFromUrl) {
-    setSelectedCategory(categoryFromUrl);
-  }
-}, [categoryFromUrl]);
+      const matchesCategory =
+        selectedCategory === "all" ||
+        product.category?.id.toString() === selectedCategory;
 
-
-  // ✅ Filter & sort
-  // ✅ Filter & sort
-const filteredProducts = products
-  .filter((product) => {
-    // Filter by search query
-    const matchesSearch = product.name
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase());
-
-    // Filter by selected category (if not "all")
-    const matchesCategory =
-      selectedCategory === "all" ||
-      product.category?.id.toString() === selectedCategory;
-
-    return matchesSearch && matchesCategory;
-  })
-  .sort((a, b) => {
-    if (sortBy === "price-low") return a.price - b.price;
-    if (sortBy === "price-high") return b.price - a.price;
-    return 0;
-  });
-
+      return matchesSearch && matchesCategory;
+    })
+    .sort((a, b) => {
+      if (sortBy === "price-low") return a.price - b.price;
+      if (sortBy === "price-high") return b.price - a.price;
+      return 0;
+    });
 
   if (isLoading) {
     return (
@@ -171,7 +173,7 @@ const filteredProducts = products
               id={product.id.toString()}
               name={product.name}
               price={product.price}
-              image={`http://localhost:8080/uploads/images/${product.image}`}
+              image={`${IMAGE_BASE_URL}/uploads/images/${product.image}`}
               category={product.category?.name}
             />
           ))}

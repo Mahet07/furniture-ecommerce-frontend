@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://furniture-ecommerce-backend-production-bac7.up.railway.app/api';
 
 // Do not set a global Content-Type here so FormData requests can let the browser set the multipart boundary.
 const api = axios.create({
