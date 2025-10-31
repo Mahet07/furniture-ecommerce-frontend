@@ -15,9 +15,6 @@ const Home = () => {
 
   const iconMap: any = { Sofa, Armchair, Bed, Lamp };
 
-  // ✅ Base API URL (uses environment variable)
-  const API_BASE_URL = "https://furniture-ecommerce-backend-production-bac7.up.railway.app";
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -192,8 +189,7 @@ const Home = () => {
                 id={product.id.toString()}
                 name={product.name}
                 price={product.price}
-                // ✅ Use dynamic base URL for images
-                image={`${API_BASE_URL}/uploads/images/${product.image}`}
+                image={`https://furniture-ecommerce-backend-production-bac7.up.railway.app/uploads/images/${product.image}`}
                 category={product.category?.name}
               />
             ))}

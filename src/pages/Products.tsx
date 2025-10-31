@@ -36,23 +36,19 @@ const Products = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const [searchParams] = useSearchParams();
-  const categoryFromUrl = searchParams.get("category");
+  const categoryFromUrl = searchParams.get("category"); // e.g. ?category=2
 
-  // ✅ Base URLs
-  const API_BASE_URL =
+  // ✅ Automatically detect backend URL
+  const BASE_URL =
     import.meta.env.MODE === "development"
-      ? "http://localhost:8080/api"
+      ? "https://furniture-ecommerce-backend-production-bac7.up.railway.app"
       : import.meta.env.VITE_API_BASE_URL;
-
-  const IMAGE_BASE_URL =
-    import.meta.env.MODE === "development"
-      ? "http://localhost:8080"
-      : "https://furniture-ecommerce-backend-production-bac7.up.railway.app";
 
   useEffect(() => {
     const fetchAll = async () => {
       setIsLoading(true);
       try {
+        // ✅ Always fetch all products
         const prodRes = await api.get("/products");
         const catRes = await api.get("/categories");
 
@@ -61,6 +57,7 @@ const Products = () => {
           Array.isArray(catRes.data) ? catRes.data : catRes.data.content || []
         );
 
+        // ✅ Set initial category from URL if present
         if (categoryFromUrl && selectedCategory === "all") {
           setSelectedCategory(categoryFromUrl);
         }
@@ -72,20 +69,24 @@ const Products = () => {
     };
 
     fetchAll();
-  }, []);
+  }, []); // Only fetch once on mount
 
+  // ✅ Sync URL param to dropdown on mount
   useEffect(() => {
     if (categoryFromUrl) {
       setSelectedCategory(categoryFromUrl);
     }
   }, [categoryFromUrl]);
 
+  // ✅ Filter & sort
   const filteredProducts = products
     .filter((product) => {
+      // Filter by search query
       const matchesSearch = product.name
         .toLowerCase()
         .includes(searchQuery.toLowerCase());
 
+      // Filter by selected category (if not "all")
       const matchesCategory =
         selectedCategory === "all" ||
         product.category?.id.toString() === selectedCategory;
@@ -173,7 +174,7 @@ const Products = () => {
               id={product.id.toString()}
               name={product.name}
               price={product.price}
-              image={`${IMAGE_BASE_URL}/uploads/images/${product.image}`}
+              image={`${BASE_URL}/uploads/images/${product.image}`}
               category={product.category?.name}
             />
           ))}

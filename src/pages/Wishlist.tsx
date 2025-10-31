@@ -37,7 +37,7 @@ const Wishlist = () => {
       id: product.id.toString(),
       name: product.name,
       price: product.price,
-      image: `http://localhost:8080/uploads/images/${product.image}`,
+      image: `https://furniture-ecommerce-backend-production-bac7.up.railway.app/uploads/images/${product.image}`,
     });
     toast({ title: "Added to cart", description: product.name });
   };
@@ -70,7 +70,7 @@ const Wishlist = () => {
             >
               <Link to={`/products/${product.id}`}>
                 <img
-                  src={`http://localhost:8080/uploads/images/${product.image}`}
+                  src={`https://furniture-ecommerce-backend-production-bac7.up.railway.app/uploads/images/${product.image}`}
                   alt={product.name}
                   className="h-60 w-full object-cover"
                 />

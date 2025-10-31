@@ -65,7 +65,7 @@ A modern, full-stack e-commerce application for selling furniture, built with Re
    
    Create a `.env` file in the root directory:
    ```env
-   VITE_API_BASE_URL=http://localhost:8080/api
+   VITE_API_BASE_URL=https://furniture-ecommerce-backend-production-bac7.up.railway.app/api
    VITE_RAZORPAY_KEY_ID=your_razorpay_key_id
    ```
 
@@ -74,7 +74,7 @@ A modern, full-stack e-commerce application for selling furniture, built with Re
    npm run dev
    ```
    
-   The app will be available at `http://localhost:8080`
+   The app will be available at `https://furniture-ecommerce-backend-production-bac7.up.railway.app`
 
 5. **Build for production**
    ```bash
