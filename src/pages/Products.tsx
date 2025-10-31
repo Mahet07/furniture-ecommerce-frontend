@@ -36,9 +36,9 @@ const Products = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const [searchParams] = useSearchParams();
-  const categoryFromUrl = searchParams.get("category"); // e.g. ?category=2
+  const categoryFromUrl = searchParams.get("category");
 
-  // ✅ Automatically detect backend URL
+  // ✅ Automatically detect backend URL for API calls (not for images anymore)
   const BASE_URL =
     import.meta.env.MODE === "development"
       ? "https://furniture-ecommerce-backend-production-bac7.up.railway.app"
@@ -48,7 +48,6 @@ const Products = () => {
     const fetchAll = async () => {
       setIsLoading(true);
       try {
-        // ✅ Always fetch all products
         const prodRes = await api.get("/products");
         const catRes = await api.get("/categories");
 
@@ -69,9 +68,8 @@ const Products = () => {
     };
 
     fetchAll();
-  }, []); // Only fetch once on mount
+  }, []);
 
-  // ✅ Sync URL param to dropdown on mount
   useEffect(() => {
     if (categoryFromUrl) {
       setSelectedCategory(categoryFromUrl);
@@ -81,12 +79,10 @@ const Products = () => {
   // ✅ Filter & sort
   const filteredProducts = products
     .filter((product) => {
-      // Filter by search query
       const matchesSearch = product.name
         .toLowerCase()
         .includes(searchQuery.toLowerCase());
 
-      // Filter by selected category (if not "all")
       const matchesCategory =
         selectedCategory === "all" ||
         product.category?.id.toString() === selectedCategory;
@@ -174,7 +170,8 @@ const Products = () => {
               id={product.id.toString()}
               name={product.name}
               price={product.price}
-              image={`${BASE_URL}/uploads/images/${product.image}`}
+              // ✅ Cloudinary already provides full image URL
+              image={product.image}
               category={product.category?.name}
             />
           ))}
