@@ -25,6 +25,9 @@ const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
   const [wishlist, setWishlist] = useState<Product[]>([]);
 
+  // ✅ Use env variable for image base URL
+  const IMAGE_BASE_URL = import.meta.env.VITE_IMAGE_BASE_URL || 'http://localhost:8080/uploads/images';
+
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -51,7 +54,7 @@ const ProductDetail = () => {
         id: product.id.toString(),
         name: product.name,
         price: product.price,
-        image: `http://localhost:8080/uploads/images/${product.image}`,
+        image: `${IMAGE_BASE_URL}/${product.image}`, // ✅ Updated
       });
     }
     toast({ title: 'Added to cart', description: `${product.name} x${quantity}` });
@@ -59,7 +62,7 @@ const ProductDetail = () => {
 
   const handleBuyNow = () => {
     handleAddToCart();
-    navigate('/cart'); // instantly redirects after adding
+    navigate('/cart');
   };
 
   const handleShare = () => {
@@ -117,9 +120,12 @@ const ProductDetail = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           <div className="aspect-square overflow-hidden rounded-2xl bg-muted">
             <img
-              src={`http://localhost:8080/uploads/images/${product.image}`}
+              src={`${IMAGE_BASE_URL}/${product.image}`} // ✅ Updated
               alt={product.name}
               className="h-full w-full object-cover"
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = '/placeholder.png'; // Optional fallback
+              }}
             />
           </div>
 

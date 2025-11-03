@@ -189,7 +189,7 @@ const Home = () => {
                 id={product.id.toString()}
                 name={product.name}
                 price={product.price}
-                image={`http://localhost:8080/uploads/images/${product.image}`}
+image={`${import.meta.env.VITE_IMAGE_BASE_URL}/${product.image}`}
                 category={product.category?.name}
               />
             ))}
